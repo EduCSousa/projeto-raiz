@@ -16,12 +16,18 @@ const alunoSchema = new mongoose.Schema({
   anoCurricular: Number
 });
 
+const cursoSchema = new mongoose.Schema({
+  nomeDoCurso: String
+});
+
 const Aluno = mongoose.model('Aluno', alunoSchema);
+const Curso = mongoose.model('Curso', cursoSchema);
 
 app.get('/', (req, res) => {
   res.send('API está a funcionar');
 });
 
+// Rotas para alunos
 app.get('/alunos', async (req, res) => {
   const alunos = await Aluno.find();
   res.json(alunos);
@@ -49,6 +55,18 @@ app.delete('/alunos/:id', async (req, res) => {
   const aluno = await Aluno.findByIdAndDelete(req.params.id);
   if (!aluno) return res.status(404).send('Aluno não encontrado');
   res.sendStatus(204);
+});
+
+// Rotas para cursos
+app.get('/cursos', async (req, res) => {
+  const cursos = await Curso.find();
+  res.json(cursos);
+});
+
+app.post('/cursos', async (req, res) => {
+  const curso = new Curso(req.body);
+  await curso.save();
+  res.status(201).json(curso);
 });
 
 const PORT = process.env.PORT || 3000;

@@ -2,14 +2,15 @@
 <html lang="pt">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Gestão de Alunos</title>
   <style>
     body { font-family: Arial, sans-serif; margin: 20px; }
-    table { border-collapse: collapse; width: 100%; margin-top: 10px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
     th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+    th { background-color: #eee; }
     button { margin-right: 5px; }
     form { margin-top: 20px; }
-    input, select { padding: 5px; margin-right: 10px; }
   </style>
 </head>
 <body>
@@ -29,17 +30,147 @@
   <tbody></tbody>
 </table>
 
-<h2 id="formTitle">Adicionar Aluno</h2>
 <form id="alunoForm">
-  <input type="text" id="nome" placeholder="Nome" required />
-  <input type="text" id="apelido" placeholder="Apelido" required />
-  <select id="curso" required></select>
-  <input type="number" id="anoCurricular" placeholder="Ano Curricular" min="1" max="5" required />
+  <h2 id="formTitle">Adicionar Aluno</h2>
+  <label>Nome: <input type="text" id="nome" required /></label><br /><br />
+  <label>Apelido: <input type="text" id="apelido" required /></label><br /><br />
+  <label>Curso:
+    <select id="curso" required>
+      <option value="">Selecione um curso</option>
+    </select>
+  </label><br /><br />
+  <label>Ano Curricular: <input type="number" id="anoCurricular" min="1" max="5" required /></label><br /><br />
   <button type="submit">Salvar</button>
   <button type="button" id="cancelEdit" style="display:none;">Cancelar</button>
 </form>
 
-<script src="script.js"></script>
+<script>
+const apiUrl = 'https://projeto-raiz-backend.onrender.com'; 
+const alunosTableBody = document.querySelector('#alunosTable tbody');
+const alunoForm = document.getElementById('alunoForm');
+const formTitle = document.getElementById('formTitle');
+const cancelEditBtn = document.getElementById('cancelEdit');
+const cursoSelect = document.getElementById('curso');
+
+let editAlunoId = null;
+
+async function carregarCursos() {
+  try {
+    const res = await fetch(`${apiUrl}/cursos`);
+    const cursos = await res.json();
+    cursoSelect.innerHTML = '<option value="">Selecione um curso</option>';
+    cursos.forEach(curso => {
+      const option = document.createElement('option');
+      option.value = curso._id || curso.id;
+      option.textContent = curso.nomeDoCurso;
+      cursoSelect.appendChild(option);
+    });
+  } catch (error) {
+    alert('Erro ao carregar cursos');
+    console.error(error);
+  }
+}
+
+async function listarAlunos() {
+  try {
+    const res = await fetch(`${apiUrl}/alunos`);
+    const alunos = await res.json();
+    alunosTableBody.innerHTML = '';
+    alunos.forEach(aluno => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${aluno.nome}</td>
+        <td>${aluno.apelido}</td>
+        <td>${aluno.curso}</td>
+        <td>${aluno.anoCurricular}</td>
+        <td>
+          <button onclick="editarAluno('${aluno._id || aluno.id}')">Editar</button>
+          <button onclick="apagarAluno('${aluno._id || aluno.id}')">Apagar</button>
+        </td>
+      `;
+      alunosTableBody.appendChild(tr);
+    });
+  } catch (error) {
+    alert('Erro ao listar alunos');
+    console.error(error);
+  }
+}
+
+async function apagarAluno(id) {
+  if (!confirm('Tem certeza que quer apagar este aluno?')) return;
+  try {
+    await fetch(`${apiUrl}/alunos/${id}`, { method: 'DELETE' });
+    listarAlunos();
+  } catch (error) {
+    alert('Erro ao apagar aluno');
+    console.error(error);
+  }
+}
+
+async function editarAluno(id) {
+  try {
+    const res = await fetch(`${apiUrl}/alunos/${id}`);
+    const aluno = await res.json();
+    document.getElementById('nome').value = aluno.nome;
+    document.getElementById('apelido').value = aluno.apelido;
+    for (let i = 0; i < cursoSelect.options.length; i++) {
+      if (cursoSelect.options[i].text === aluno.curso) {
+        cursoSelect.selectedIndex = i;
+        break;
+      }
+    }
+    document.getElementById('anoCurricular').value = aluno.anoCurricular;
+    formTitle.textContent = 'Editar Aluno';
+    cancelEditBtn.style.display = 'inline';
+    editAlunoId = id;
+  } catch (error) {
+    alert('Erro ao carregar dados do aluno');
+    console.error(error);
+  }
+}
+
+cancelEditBtn.onclick = () => {
+  alunoForm.reset();
+  formTitle.textContent = 'Adicionar Aluno';
+  cancelEditBtn.style.display = 'none';
+  editAlunoId = null;
+};
+
+alunoForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const alunoData = {
+    nome: document.getElementById('nome').value.trim(),
+    apelido: document.getElementById('apelido').value.trim(),
+    curso: cursoSelect.options[cursoSelect.selectedIndex].text,
+    anoCurricular: Number(document.getElementById('anoCurricular').value)
+  };
+  try {
+    if (editAlunoId) {
+      await fetch(`${apiUrl}/alunos/${editAlunoId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(alunoData)
+      });
+    } else {
+      await fetch(`${apiUrl}/alunos`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(alunoData)
+      });
+    }
+    alunoForm.reset();
+    formTitle.textContent = 'Adicionar Aluno';
+    cancelEditBtn.style.display = 'none';
+    editAlunoId = null;
+    listarAlunos();
+  } catch (error) {
+    alert('Erro ao salvar aluno');
+    console.error(error);
+  }
+});
+
+carregarCursos().then(() => listarAlunos());
+</script>
 
 </body>
 </html>
