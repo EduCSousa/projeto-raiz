@@ -2,14 +2,14 @@ const express = require('express');
 const mongoose = require('mongoose');
 require('dotenv').config();
 
-// Importação dos modelos - ATENÇÃO AOS NOMES DOS ARQUIVOS!
-const Aluno = require('./models/alunos'); // arquivo alunos.js (com 's')
-const Curso = require('./models/cursos'); // arquivo cursos.js (com 's')
+
+const Aluno = require('./models/alunos'); 
+const Curso = require('./models/cursos'); 
 
 const app = express();
 app.use(express.json());
 
-// Conexão com MongoDB
+
 mongoose.connect(process.env.MONGODB_URI, {
   serverApi: { version: '1', strict: true, deprecationErrors: true },
   useNewUrlParser: true,
@@ -18,7 +18,7 @@ mongoose.connect(process.env.MONGODB_URI, {
 .then(() => console.log('MongoDB conectado!'))
 .catch(err => console.error('Erro na conexão com MongoDB:', err));
 
-// Rotas para Alunos
+
 app.get('/alunos', async (req, res) => {
   try {
     const alunos = await Aluno.find();
@@ -77,7 +77,7 @@ app.put('/alunos/:id', async (req, res) => {
 
 app.delete('/alunos/:id', async (req, res) => {
   try {
-    await Aluno.deleteOne({ _id: req.params.id }); // Método atualizado
+    await Aluno.deleteOne({ _id: req.params.id }); 
     res.json({ message: 'Aluno apagado' });
   } catch (err) {
     res.status(500).json({ message: err.message });

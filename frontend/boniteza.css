@@ -1,0 +1,13 @@
+body {
+  font-family: sans-serif;
+  margin: 20px;
+}
+input {
+  margin: 5px;
+}
+#alunos-list {
+  margin-bottom: 20px;
+}
+.aluno {
+  margin-bottom: 10px;
+}
