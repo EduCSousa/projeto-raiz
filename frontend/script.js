@@ -1,4 +1,4 @@
-const apiUrl = 'http://localhost:3000';
+const apiUrl = 'https://teu-api-render-url.onrender.com';
 const alunosTableBody = document.querySelector('#alunosTable tbody');
 const alunoForm = document.getElementById('alunoForm');
 const formTitle = document.getElementById('formTitle');
