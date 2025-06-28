@@ -1,0 +1,34 @@
+{
+  "alunos": [
+    {
+      "id": 1,
+      "nome": "Eduardo",
+      "apelido": "Sousa",
+      "curso": "Engenharia de Redes e Sistemas de Computadores",
+      "anoCurricular": 2,
+      "numeroAluno": 31658
+    },
+    {
+      "id": 2,
+      "nome": "Ana",
+      "apelido": "Silva",
+      "curso": "Engenharia Informática",
+      "anoCurricular": 1,
+      "numeroAluno": 31234
+    },
+    {
+      "id": 3,
+      "nome": "Carlos",
+      "apelido": "Oliveira",
+      "curso": "Gestão",
+      "anoCurricular": 3,
+      "numeroAluno": 31111
+    }
+  ],
+  "cursos": [
+    { "id": 1, "nomeDoCurso": "Engenharia de Redes e Sistemas de Computadores" },
+    { "id": 2, "nomeDoCurso": "Engenharia Informática" },
+    { "id": 3, "nomeDoCurso": "Gestão" },
+    { "id": 4, "nomeDoCurso": "Design Multimédia" }
+  ]
+}
