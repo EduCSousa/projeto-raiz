@@ -1,4 +1,5 @@
-const apiUrl = 'https://projeto-raiz-backend.onrender.com/alunos';
+const apiUrl = 'https://projeto-raiz-backend.onrender.com'; 
+
 const alunosTableBody = document.querySelector('#alunosTable tbody');
 const alunoForm = document.getElementById('alunoForm');
 const formTitle = document.getElementById('formTitle');
@@ -7,15 +8,15 @@ const cursoSelect = document.getElementById('curso');
 
 let editAlunoId = null;
 
-
 async function carregarCursos() {
   try {
-    const res = await fetch(${apiUrl}/cursos);
+    const res = await fetch(`${apiUrl}/cursos`);
+    if (!res.ok) throw new Error('Erro ao carregar cursos');
     const cursos = await res.json();
     cursoSelect.innerHTML = '';
     cursos.forEach(curso => {
       const option = document.createElement('option');
-      option.value = curso.id;
+      option.value = curso._id || curso.id;
       option.textContent = curso.nomeDoCurso;
       cursoSelect.appendChild(option);
     });
@@ -27,21 +28,22 @@ async function carregarCursos() {
 
 async function listarAlunos() {
   try {
-    const res = await fetch(${apiUrl}/alunos);
+    const res = await fetch(`${apiUrl}/alunos`);
+    if (!res.ok) throw new Error('Erro ao listar alunos');
     const alunos = await res.json();
     alunosTableBody.innerHTML = '';
     alunos.forEach(aluno => {
       const tr = document.createElement('tr');
-      tr.innerHTML = 
+      tr.innerHTML = `
         <td>${aluno.nome}</td>
         <td>${aluno.apelido}</td>
         <td>${aluno.curso}</td>
         <td>${aluno.anoCurricular}</td>
         <td>
-          <button onclick="editarAluno(${aluno.id})">Editar</button>
-          <button onclick="apagarAluno(${aluno.id})">Apagar</button>
+          <button onclick="editarAluno('${aluno._id}')">Editar</button>
+          <button onclick="apagarAluno('${aluno._id}')">Apagar</button>
         </td>
-      ;
+      `;
       alunosTableBody.appendChild(tr);
     });
   } catch (error) {
@@ -50,11 +52,11 @@ async function listarAlunos() {
   }
 }
 
-
 async function apagarAluno(id) {
   if (!confirm('Tem certeza que quer apagar este aluno?')) return;
   try {
-    await fetch(${apiUrl}/alunos/${id}, { method: 'DELETE' });
+    const res = await fetch(`${apiUrl}/alunos/${id}`, { method: 'DELETE' });
+    if (!res.ok) throw new Error('Erro ao apagar aluno');
     listarAlunos();
   } catch (error) {
     alert('Erro ao apagar aluno');
@@ -62,15 +64,15 @@ async function apagarAluno(id) {
   }
 }
 
-
 async function editarAluno(id) {
   try {
-    const res = await fetch(${apiUrl}/alunos/${id});
+    const res = await fetch(`${apiUrl}/alunos/${id}`);
+    if (!res.ok) throw new Error('Erro ao carregar dados do aluno');
     const aluno = await res.json();
     document.getElementById('nome').value = aluno.nome;
     document.getElementById('apelido').value = aluno.apelido;
-    // Selecionar o curso correto no select:
-    for(let i=0; i<cursoSelect.options.length; i++) {
+
+    for(let i = 0; i < cursoSelect.options.length; i++) {
       if (cursoSelect.options[i].text === aluno.curso) {
         cursoSelect.selectedIndex = i;
         break;
@@ -86,14 +88,12 @@ async function editarAluno(id) {
   }
 }
 
-
 cancelEditBtn.onclick = () => {
   alunoForm.reset();
   formTitle.textContent = 'Adicionar Aluno';
   cancelEditBtn.style.display = 'none';
   editAlunoId = null;
 };
-
 
 alunoForm.addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -106,19 +106,19 @@ alunoForm.addEventListener('submit', async (e) => {
 
   try {
     if (editAlunoId) {
-      
-      await fetch(${apiUrl}/alunos/${editAlunoId}, {
+      const res = await fetch(`${apiUrl}/alunos/${editAlunoId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(alunoData)
       });
+      if (!res.ok) throw new Error('Erro ao editar aluno');
     } else {
-      
-      await fetch(${apiUrl}/alunos, {
+      const res = await fetch(`${apiUrl}/alunos`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(alunoData)
       });
+      if (!res.ok) throw new Error('Erro ao adicionar aluno');
     }
     alunoForm.reset();
     formTitle.textContent = 'Adicionar Aluno';
@@ -130,7 +130,6 @@ alunoForm.addEventListener('submit', async (e) => {
     console.error(error);
   }
 });
-
 
 carregarCursos().then(() => {
   listarAlunos();
