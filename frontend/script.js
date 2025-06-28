@@ -1,4 +1,4 @@
-const apiUrl = 'https://projeto-raiz-backend.onrender.com';
+const apiUrl = 'https://projeto-raiz-backend.onrender.com/alunos';
 const alunosTableBody = document.querySelector('#alunosTable tbody');
 const alunoForm = document.getElementById('alunoForm');
 const formTitle = document.getElementById('formTitle');
