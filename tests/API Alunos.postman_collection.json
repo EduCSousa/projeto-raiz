@@ -1,0 +1,91 @@
+{
+	"info": {
+		"_postman_id": "4e40cce4-74df-449a-a4ea-a10c68c3be50",
+		"name": "API Alunos",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "46281802",
+		"_collection_link": "https://eduardo-5546828.postman.co/workspace/2f9bc1e0-a51b-4449-83df-8355dd1f1a36/collection/46281802-4e40cce4-74df-449a-a4ea-a10c68c3be50?action=share&source=collection_link&creator=46281802"
+	},
+	"item": [
+		{
+			"name": "alunos",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://projeto-raiz-backend.onrender.com/alunos",
+					"protocol": "https",
+					"host": [
+						"projeto-raiz-backend",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"alunos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "alunos",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "https://projeto-raiz-backend.onrender.com/alunos",
+					"protocol": "https",
+					"host": [
+						"projeto-raiz-backend",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"alunos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "cursos",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://projeto-raiz-backend.onrender.com/cursos",
+					"protocol": "https",
+					"host": [
+						"projeto-raiz-backend",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"cursos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "cursos",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "https://projeto-raiz-backend.onrender.com/cursos",
+					"protocol": "https",
+					"host": [
+						"projeto-raiz-backend",
+						"onrender",
+						"com"
+					],
+					"path": [
+						"cursos"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
